@@ -11,8 +11,9 @@ class OnboardingProvider extends ChangeNotifier {
   void setPage(int page) {
    if (page >= 0 && page < totalPages) {
      _currentPage = page;
+      notifyListeners();
    }
-    notifyListeners();
+   
   }
 
   bool canGoNext() {
