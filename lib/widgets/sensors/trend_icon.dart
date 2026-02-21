@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import '../../core/theme/app_theme.dart';
 import '../../models/sensor_model.dart';
 
-/// Small directional arrow icon indicating reading trend.
+/// Arrow icon indicating the direction of the latest sensor reading trend.
 ///
-/// Up   → green arrow (rising value)
-/// Down → red/maroon arrow (falling value)
-/// Stable → grey dash
+/// Colours are sourced from [AppColors] semantic trend tokens —
+/// no raw hex literals in this file.
 class TrendIcon extends StatelessWidget {
   final TrendDirection trend;
   final double size;
@@ -14,15 +14,22 @@ class TrendIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return Icon(_icon, size: size, color: _color);
+  }
+
+  IconData get _icon {
     switch (trend) {
-      case TrendDirection.up:
-        return Icon(Icons.trending_up, size: size, color: const Color(0xFF15803D));
-      case TrendDirection.down:
-        return Icon(Icons.trending_down, size: size, color: const Color(0xFFBE123C));
-      case TrendDirection.stable:
-        return Icon(Icons.trending_flat, size: size, color: const Color(0xFF6B7280));
+      case TrendDirection.up:     return Icons.trending_up;
+      case TrendDirection.down:   return Icons.trending_down;
+      case TrendDirection.stable: return Icons.trending_flat;
+    }
+  }
+
+  Color get _color {
+    switch (trend) {
+      case TrendDirection.up:     return AppColors.trendUp;
+      case TrendDirection.down:   return AppColors.trendDown;
+      case TrendDirection.stable: return AppColors.trendStable;
     }
   }
 }
-
-

@@ -3,11 +3,16 @@ import '../../core/theme/app_theme.dart';
 import '../common/app_logo.dart';
 import 'teal_back_button.dart';
 
-/// Shared top section used on all auth screens:
-///   • Teal back button (top-left)
-///   • AquaSense logo   (centred)
-///   • Title            (centred, bold)
-///   • Subtitle         (centred, grey)
+/// Shared header used at the top of every auth screen.
+///
+/// Renders (top → bottom):
+///   1. Teal back button (top-left aligned)
+///   2. AquaSense logo  (centred)
+///   3. Title           (centred, [TextTheme.titleLarge])
+///   4. Subtitle        (centred, [TextTheme.bodyMedium])
+///
+/// Text styles come from [Theme.of(context).textTheme] so they automatically
+/// pick up font family, size, weight, and colour from [AppTheme].
 class AuthHeader extends StatelessWidget {
   final String title;
   final String subtitle;
@@ -22,6 +27,8 @@ class AuthHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tt = Theme.of(context).textTheme;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -36,28 +43,12 @@ class AuthHeader extends StatelessWidget {
         const Center(child: AppLogo(size: 100)),
         const SizedBox(height: 22),
 
-        // ── Title ────────────────────────────────────────────────────
-        Text(
-          title,
-          textAlign: TextAlign.center,
-          style: const TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.w700,
-            color: AppColors.textDark,
-          ),
-        ),
+        // ── Screen title ─────────────────────────────────────────────
+        Text(title, textAlign: TextAlign.center, style: tt.titleLarge),
         const SizedBox(height: 6),
 
-        // ── Subtitle ─────────────────────────────────────────────────
-        Text(
-          subtitle,
-          textAlign: TextAlign.center,
-          style: const TextStyle(
-            fontSize: 14,
-            color: AppColors.textGrey,
-            height: 1.5,
-          ),
-        ),
+        // ── Subtitle / instruction ────────────────────────────────────
+        Text(subtitle, textAlign: TextAlign.center, style: tt.bodyMedium),
       ],
     );
   }

@@ -111,11 +111,7 @@ class _SheetHeader extends StatelessWidget {
             child: Text(
               _titles[step],
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-                color: AppColors.textDark,
-              ),
+              style: Theme.of(context).textTheme.titleMedium,
             ),
           ),
           GestureDetector(
@@ -252,12 +248,12 @@ class _SuccessSheet extends StatelessWidget {
           const SizedBox(height: 20),
           const Text('Successful',
               style: TextStyle(
-                  fontSize: 22, fontWeight: FontWeight.w700, color: AppColors.textDark)),
+                  style: Theme.of(context).textTheme.headlineSmall)),
           const SizedBox(height: 8),
           Text(
             'Sensor $sensorId successfully added and now being monitored.',
             textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 14, color: AppColors.textGrey, height: 1.5),
+            style: Theme.of(context).textTheme.bodyMedium,
           ),
           const SizedBox(height: 28),
           AppButton(
@@ -398,8 +394,8 @@ class _Step3AiPrefs extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('Enable AI Advisory',
-                    style: TextStyle(fontSize: 14, color: AppColors.textDark)),
+                Text('Enable AI Advisory',
+                    style: Theme.of(context).textTheme.bodyLarge),
                 _CustomCheckbox(value: form.aiAdvisoryEnabled),
               ],
             ),
@@ -448,8 +444,8 @@ class _Step4Review extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('Enable AI Advisory',
-                  style: TextStyle(fontSize: 14, color: AppColors.textDark)),
+              Text('Enable AI Advisory',
+                  style: Theme.of(context).textTheme.bodyLarge),
               _CustomCheckbox(value: form.aiAdvisoryEnabled),
             ],
           ),
@@ -465,19 +461,25 @@ class _Step4Review extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 
 /// Bold label used above wizard form fields.
+/// Bold label above each wizard form field.
+/// Uses [TextTheme.labelLarge] — defined once in [AppTheme], not here.
 class _WizardFieldLabel extends StatelessWidget {
   final String text;
   const _WizardFieldLabel(this.text);
 
   @override
   Widget build(BuildContext context) {
-    return Text(text,
-        style: const TextStyle(
-            fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.textDark));
+    return Text(text, style: Theme.of(context).textTheme.labelLarge);
   }
 }
 
 /// Outlined text input consistent with wizard design.
+/// Text input used inside the Add Sensor wizard steps.
+///
+/// Decoration (borders, fill, padding, hint style) is fully inherited from
+/// [AppTheme.inputDecorationTheme] — only the hint string and keyboard type
+/// are configured here. This keeps the wizard consistent with [AppTextField]
+/// without duplicating a single border radius or colour.
 class _WizardTextField extends StatelessWidget {
   final String hint;
   final String initialValue;
@@ -495,25 +497,12 @@ class _WizardTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       initialValue: initialValue.isNotEmpty ? initialValue : null,
-      onChanged: onChanged,
+      onChanged:    onChanged,
       keyboardType: keyboardType,
-      style: const TextStyle(fontSize: 14, color: AppColors.textDark),
-      decoration: InputDecoration(
-        hintText: hint,
-        hintStyle: const TextStyle(color: AppColors.textGrey, fontSize: 14),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        filled: true,
-        fillColor: AppColors.white,
-        border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: AppColors.borderColor)),
-        enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: AppColors.borderColor)),
-        focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: AppColors.teal, width: 1.5)),
-      ),
+      // Body style from textTheme — size and colour defined once in AppTheme
+      style: Theme.of(context).textTheme.bodyLarge,
+      // Only hint text is specified; all border/fill/padding comes from theme
+      decoration: InputDecoration(hintText: hint),
     );
   }
 }
@@ -546,16 +535,16 @@ class _DropdownField<T> extends StatelessWidget {
       child: DropdownButtonHideUnderline(
         child: DropdownButton<T>(
           value: value,
-          hint: Text(hint,
-              style: const TextStyle(color: AppColors.textGrey, fontSize: 14)),
+          hint: Text(hint, style: Theme.of(context).textTheme.bodyMedium),
           isExpanded: true,
           icon: const Icon(Icons.keyboard_arrow_down, color: AppColors.textGrey),
           items: items
               .map((item) => DropdownMenuItem<T>(
                     value: item,
-                    child: Text(labelOf(item),
-                        style: const TextStyle(
-                            fontSize: 14, color: AppColors.textDark)),
+                    child: Text(
+                      labelOf(item),
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
                   ))
               .toList(),
           onChanged: onChanged,
@@ -574,25 +563,23 @@ class _ReviewRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tt = Theme.of(context).textTheme;
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label,
-              style: const TextStyle(
-                  fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.textDark)),
+          Text(label, style: tt.labelLarge),
           const SizedBox(height: 6),
           Container(
-            width: double.infinity,
+            width:   double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             decoration: BoxDecoration(
-              color: AppColors.white,
+              color:        AppColors.white,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.borderColor),
+              border:       Border.all(color: AppColors.borderColor),
             ),
-            child: Text(value.isNotEmpty ? value : '—',
-                style: const TextStyle(fontSize: 14, color: AppColors.textGrey)),
+            child: Text(value.isNotEmpty ? value : '—', style: tt.bodyMedium),
           ),
         ],
       ),
