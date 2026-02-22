@@ -19,12 +19,14 @@ class SensorDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)?.settings.arguments;
     if (args is! SensorModel) {
-      return const Scaffold(
-        body: Center(child: Text('Invalid sensor data')),
+      return Scaffold(
+        appBar: AppBar(title: const Text('Error')),
+        body: const Center(child: Text('Invalid sensor data')),
       );
-    }
-    final sensor = args;    return Scaffold(
-      backgroundColor: AppColors.background,
+    }  
+     final sensor = args;
+
+    return Scaffold(      backgroundColor: AppColors.background,
       body: SafeArea(
         child: Column(
           children: [
@@ -201,6 +203,7 @@ class _SensorDetailCard extends StatelessWidget {
 
   String _formatTimestamp(DateTime t) {
     final diff = DateTime.now().difference(t);
+    if (diff.isNegative) return 'Updated just now';
     if (diff.inSeconds < 60) return 'Updated just now';
     if (diff.inMinutes < 60) return 'Updated ${diff.inMinutes} min ago';
     if (diff.inHours   < 24) return 'Updated ${diff.inHours}h ago';

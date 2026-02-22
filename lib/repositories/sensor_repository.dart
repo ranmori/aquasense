@@ -50,7 +50,7 @@ class MockSensorRepository implements SensorRepository {
       location:  'Amuwo Odofin, Lagos',
       parameter: ParameterType.pH,
       riskLevel: RiskLevel.medium,
-      complianceStatus: ComplianceStatus.pass,
+      complianceStatus: ComplianceStatus.fail,
       safeRange:       '6.5 - 8.5',
       alertThreshold:  AlertThreshold.warningLevel,
       latestReading: SensorReading(
@@ -69,8 +69,7 @@ class MockSensorRepository implements SensorRepository {
         impactNotes:
             'Monitor for 30 min; escalate if pH drops below 5.0.',
       ),
-    ),
-    SensorModel(
+    ),    SensorModel(
       id:        'AQ-TUR-145',
       name:      'Turbidity Monitor A',
       location:  'Mowe, Ogun',
@@ -110,8 +109,8 @@ class MockSensorRepository implements SensorRepository {
         timestamp: DateTime.now().subtract(const Duration(minutes: 5)),
       ),
       advisory: const AiAdvisory(
-        headline:          'Acidity exceeds safe discharge limits.',
-        impactExplanation: 'Sensor operating within acceptable range.',
+        headline:          'Turbidity within acceptable range.',
+        impactExplanation: 'Sensor operating within acceptable parameters.',
         recommendedActions: ['Maintain current treatment protocol'],
         impactNotes: 'No immediate action required.',
       ),
