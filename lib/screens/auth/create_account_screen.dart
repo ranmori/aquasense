@@ -14,7 +14,8 @@ import '../../widgets/common/app_text_field.dart';
 ///
 /// Layout (top → bottom):
 ///   • [AuthHeader]           — back button, logo, title, subtitle
-///   • Email / Password fields with [FieldLabel]s
+///   • Email / Password / Confirm Password fields with [FieldLabel]s
+///   • Inline validation error messages per field
 ///   • [_TermsCheckbox]       — "I agree to terms of service and privacy policy"
 ///   • "Create Account" primary button
 ///   • [GoogleSignInButton]   — "Sign up with Google"
@@ -27,27 +28,77 @@ class CreateAccountScreen extends StatefulWidget {
 }
 
 class _CreateAccountScreenState extends State<CreateAccountScreen> {
-  final _emailController    = TextEditingController();
-  final _passwordController = TextEditingController();
+  final _emailController           = TextEditingController();
+  final _passwordController        = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+
   bool _agreedToTerms = false;
 
-  /// Primary CTA enabled only when fields filled + terms accepted.
-  bool get _canSubmit =>
+  /// Whether the user has touched each field (used to show errors only after
+  /// the user has interacted with a field, not on first render).
+  bool _emailTouched           = false;
+  bool _passwordTouched        = false;
+  bool _confirmPasswordTouched = false;
+
+  // ── Validation helpers ────────────────────────────────────────────────────
+
+  static final _emailRegex = RegExp(r'^[\w.+-]+@[\w-]+\.[a-zA-Z]{2,}$');
+
+  String? get _emailError {
+    if (!_emailTouched) return null;
+    final v = _emailController.text.trim();
+    if (v.isEmpty) return 'Email is required';
+    if (!_emailRegex.hasMatch(v)) return 'Enter a valid email address';
+    return null;
+  }
+
+  String? get _passwordError {
+    if (!_passwordTouched) return null;
+    final v = _passwordController.text;
+    if (v.isEmpty) return 'Password is required';
+    if (v.length < 6) return 'Password must be at least 6 characters';
+    return null;
+  }
+
+  String? get _confirmPasswordError {
+    if (!_confirmPasswordTouched) return null;
+    final v = _confirmPasswordController.text;
+    if (v.isEmpty) return 'Please confirm your password';
+    if (v != _passwordController.text) return 'Passwords do not match';
+    return null;
+  }
+
+  bool get _formValid =>
+      _emailError == null &&
+      _passwordError == null &&
+      _confirmPasswordError == null &&
       _emailController.text.isNotEmpty &&
       _passwordController.text.isNotEmpty &&
-      _agreedToTerms;
+      _confirmPasswordController.text.isNotEmpty;
+
+  /// Primary CTA enabled only when form is valid + terms accepted.
+  bool get _canSubmit => _formValid && _agreedToTerms;
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
   // ── Actions ───────────────────────────────────────────────────────────────
 
   Future<void> _submit(AuthProvider auth) async {
+    // Mark all fields as touched to surface any remaining errors
+    setState(() {
+      _emailTouched           = true;
+      _passwordTouched        = true;
+      _confirmPasswordTouched = true;
+    });
+
     if (!_canSubmit) return;
+
     final success = await auth.createAccount(
       email:    _emailController.text.trim(),
       password: _passwordController.text,
@@ -85,16 +136,13 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                     title: 'Create Account',
                     subtitle: 'Sign up to get started on the platform',
                     onBack: () {
-                           if (Navigator.of(context).canPop()) {
-                            Navigator.of(context).pop();
-                          } else {
-                            // If someone arrived here directly (e.g., deep link),
-                            // send them to onboarding instead of a black screen.
-                            Navigator.of(
-                              context,
-                            ).pushReplacementNamed(AppRoutes.onboarding);
-                          }
-                        },
+                      if (Navigator.of(context).canPop()) {
+                        Navigator.of(context).pop();
+                      } else {
+                        Navigator.of(context)
+                            .pushReplacementNamed(AppRoutes.onboarding);
+                      }
+                    },
                   ),
                   const SizedBox(height: 28),
 
@@ -102,35 +150,67 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                   const FieldLabel('Email'),
                   const SizedBox(height: 8),
                   AppTextField(
-                    hint: 'Enter your email',
-                    controller: _emailController,
+                    hint:         'Enter your email',
+                    controller:   _emailController,
                     keyboardType: TextInputType.emailAddress,
-                    onChanged: (_) => setState(() {}),
+                    onChanged: (_) => setState(() => _emailTouched = true),
                   ),
+                  _FieldError(message: _emailError),
                   const SizedBox(height: 18),
 
                   // ── Password ─────────────────────────────────────────
                   const FieldLabel('Password'),
                   const SizedBox(height: 8),
                   AppTextField(
-                    hint: '••••••••',
+                    hint:       '••••••••',
                     controller: _passwordController,
                     isPassword: true,
-                    onChanged: (_) => setState(() {}),
+                    onChanged: (_) => setState(() {
+                      _passwordTouched = true;
+                      // Re-validate confirm field live when password changes
+                      if (_confirmPasswordTouched) {}
+                    }),
                   ),
+                  _FieldError(message: _passwordError),
+                  const SizedBox(height: 18),
+
+                  // ── Confirm Password ─────────────────────────────────
+                  const FieldLabel('Confirm Password'),
+                  const SizedBox(height: 8),
+                  AppTextField(
+                    hint:       '••••••••',
+                    controller: _confirmPasswordController,
+                    isPassword: true,
+                    onChanged: (_) =>
+                        setState(() => _confirmPasswordTouched = true),
+                  ),
+                  _FieldError(message: _confirmPasswordError),
                   const SizedBox(height: 16),
 
                   // ── Terms checkbox ───────────────────────────────────
                   _TermsCheckbox(
-                    value: _agreedToTerms,
+                    value:     _agreedToTerms,
                     onChanged: (val) => setState(() => _agreedToTerms = val),
                   ),
                   const SizedBox(height: 24),
 
+                  // ── Provider-level error (e.g. email already in use) ─
+                  if (auth.errorMessage != null)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: Text(
+                        auth.errorMessage!,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: AppColors.riskHighFg,
+                        ),
+                      ),
+                    ),
+
                   // ── Primary CTA ──────────────────────────────────────
                   AppButton(
-                    label: 'Create Account',
-                    enabled: _canSubmit,
+                    label:     'Create Account',
+                    enabled:   _canSubmit,
                     isLoading: auth.status == AuthStatus.loading,
                     onPressed: () => _submit(auth),
                   ),
@@ -146,13 +226,11 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                   // ── Sign-in link ─────────────────────────────────────
                   AuthFooterLink(
                     prefixText: 'Already have an account?  ',
-                    linkText: 'Sign in',
-                   onTap: () => Navigator.of(context).pushNamedAndRemoveUntil(
+                    linkText:   'Sign in',
+                    onTap: () => Navigator.of(context).pushNamedAndRemoveUntil(
                       AppRoutes.signIn,
-                      ModalRoute.withName(
-                        AppRoutes.onboarding,
-                      ), // Keep onboarding, remove signup
-                    ),   
+                      ModalRoute.withName(AppRoutes.onboarding),
+                    ),
                   ),
                   const SizedBox(height: 24),
                 ],
@@ -168,6 +246,35 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
 // ─────────────────────────────────────────────────────────────────────────────
 // Private sub-widgets
 // ─────────────────────────────────────────────────────────────────────────────
+
+/// Displays an inline validation error below a field.
+/// Renders nothing when [message] is null, so spacing stays consistent.
+class _FieldError extends StatelessWidget {
+  final String? message;
+  const _FieldError({required this.message});
+
+  @override
+  Widget build(BuildContext context) {
+    if (message == null) return const SizedBox(height: 4);
+    return Padding(
+      padding: const EdgeInsets.only(top: 6),
+      child: Row(
+        children: [
+          const Icon(Icons.error_outline, size: 14, color: AppColors.riskHighFg),
+          const SizedBox(width: 4),
+          Expanded(
+            child: Text(
+              message!,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: AppColors.riskHighFg,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
 /// "I agree to the terms of service and privacy policy" checkbox row.
 /// Only used on Create Account so kept private to this file.
@@ -213,7 +320,7 @@ class _TermsCheckbox extends StatelessWidget {
                 TextSpan(
                   text: 'terms of service',
                   style: const TextStyle(
-                    color: AppColors.teal,
+                    color:      AppColors.teal,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -221,7 +328,7 @@ class _TermsCheckbox extends StatelessWidget {
                 TextSpan(
                   text: 'privacy policy',
                   style: const TextStyle(
-                    color: AppColors.teal,
+                    color:      AppColors.teal,
                     fontWeight: FontWeight.w500,
                   ),
                 ),

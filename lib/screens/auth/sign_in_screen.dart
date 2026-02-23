@@ -30,9 +30,35 @@ class _SignInScreenState extends State<SignInScreen> {
   final _passwordController = TextEditingController();
   bool _rememberMe = false;
 
-  bool get _canSubmit =>
+  /// Whether the user has touched each field (errors shown only after interaction).
+  bool _emailTouched    = false;
+  bool _passwordTouched = false;
+
+  // ── Validation helpers ────────────────────────────────────────────────────
+
+  static final _emailRegex = RegExp(r'^[\w.+-]+@[\w-]+\.[a-zA-Z]{2,}$');
+
+  String? get _emailError {
+    if (!_emailTouched) return null;
+    final v = _emailController.text.trim();
+    if (v.isEmpty) return 'Email is required';
+    if (!_emailRegex.hasMatch(v)) return 'Enter a valid email address';
+    return null;
+  }
+
+  String? get _passwordError {
+    if (!_passwordTouched) return null;
+    if (_passwordController.text.isEmpty) return 'Password is required';
+    return null;
+  }
+
+  bool get _formValid =>
+      _emailError == null &&
+      _passwordError == null &&
       _emailController.text.isNotEmpty &&
       _passwordController.text.isNotEmpty;
+
+  bool get _canSubmit => _formValid;
 
   @override
   void dispose() {
@@ -44,6 +70,12 @@ class _SignInScreenState extends State<SignInScreen> {
   // ── Actions ───────────────────────────────────────────────────────────────
 
   Future<void> _submit(AuthProvider auth) async {
+    // Mark all fields as touched to surface any remaining errors
+    setState(() {
+      _emailTouched    = true;
+      _passwordTouched = true;
+    });
+
     if (!_canSubmit) return;
 
     final success = await auth.signIn(
@@ -105,8 +137,9 @@ class _SignInScreenState extends State<SignInScreen> {
                     hint:         'Enter your email',
                     controller:   _emailController,
                     keyboardType: TextInputType.emailAddress,
-                    onChanged:    (_) => setState(() {}),
+                    onChanged:    (_) => setState(() => _emailTouched = true),
                   ),
+                  _FieldError(message: _emailError),
                   const SizedBox(height: 18),
 
                   // ── Password ──────────────────────────────────────────
@@ -116,8 +149,9 @@ class _SignInScreenState extends State<SignInScreen> {
                     hint:       '••••••••',
                     controller: _passwordController,
                     isPassword: true,
-                    onChanged:  (_) => setState(() {}),
+                    onChanged:  (_) => setState(() => _passwordTouched = true),
                   ),
+                  _FieldError(message: _passwordError),
                   const SizedBox(height: 14),
 
                   // ── Remember me + Forgot Password ─────────────────────
@@ -142,6 +176,19 @@ class _SignInScreenState extends State<SignInScreen> {
                   ),
                   const SizedBox(height: 24),
 
+                  // ── Provider-level error (e.g. wrong credentials) ─────
+                  if (auth.errorMessage != null)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: Text(
+                        auth.errorMessage!,
+                        textAlign: TextAlign.center,
+                        style: tt.bodySmall?.copyWith(
+                          color: AppColors.riskHighFg,
+                        ),
+                      ),
+                    ),
+
                   // ── Login CTA ─────────────────────────────────────────
                   AppButton(
                     label:     'Login',
@@ -165,16 +212,6 @@ class _SignInScreenState extends State<SignInScreen> {
                     onTap: () => Navigator.of(context)
                         .pushReplacementNamed(AppRoutes.createAccount),
                   ),
-
-                  // ── Error message ─────────────────────────────────────
-                  if (auth.errorMessage != null) ...[
-                    const SizedBox(height: 16),
-                    Text(
-                      auth.errorMessage!,
-                      textAlign: TextAlign.center,
-                      style: tt.bodySmall?.copyWith(color: AppColors.riskHighFg),
-                    ),
-                  ],
                   const SizedBox(height: 24),
                 ],
               ),
@@ -190,9 +227,36 @@ class _SignInScreenState extends State<SignInScreen> {
 // Private sub-widgets
 // ─────────────────────────────────────────────────────────────────────────────
 
+/// Displays an inline validation error below a field.
+/// Renders a small spacer when [message] is null so layout stays stable.
+class _FieldError extends StatelessWidget {
+  final String? message;
+  const _FieldError({required this.message});
+
+  @override
+  Widget build(BuildContext context) {
+    if (message == null) return const SizedBox(height: 4);
+    return Padding(
+      padding: const EdgeInsets.only(top: 6),
+      child: Row(
+        children: [
+          const Icon(Icons.error_outline, size: 14, color: AppColors.riskHighFg),
+          const SizedBox(width: 4),
+          Expanded(
+            child: Text(
+              message!,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: AppColors.riskHighFg,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 /// "Remember me" checkbox row — local to SignInScreen.
-/// Uses [tt.bodySmall] via [Theme.of(context)] (non-const) so there's no
-/// broken-const-context compile error.
 class _RememberMeCheckbox extends StatelessWidget {
   final bool value;
   final ValueChanged<bool> onChanged;
