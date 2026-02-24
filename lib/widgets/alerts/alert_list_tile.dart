@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/app_theme.dart';
 import '../../models/alert_model.dart';
+import 'package:intl/intl.dart';
 
 /// A single alert row with a 4px left accent bar coloured by [AlertType].
 ///
@@ -74,15 +75,15 @@ class AlertListTile extends StatelessWidget {
   }
 
   /// Formats as "12:24 PM. May 14, 2019"
-  String _formatTimestamp(DateTime t) {
-    final h  = t.hour > 12 ? t.hour - 12 : (t.hour == 0 ? 12 : t.hour);
-    final m  = t.minute.toString().padLeft(2, '0');
-    final ap = t.hour >= 12 ? 'PM' : 'AM';
-    return '$h:$m $ap. ${_month(t.month)} ${t.day}, ${t.year}';
-  }
+ String _formatTimestamp(DateTime t, String locale) {
+  final time = DateFormat.jm(locale).format(t);
+  final date = DateFormat.yMMMd(locale).format(t);
+  return Intl.message(
+    '$time. $date',
+    name: 'timestamp_format',
+    args: [time, date],
+  );
+}
 
-  String _month(int m) => const [
-    '', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
-  ][m];
+ 
 }

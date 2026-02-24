@@ -118,7 +118,8 @@ class AlertProvider extends ChangeNotifier {
   /// Returns a list of `(dateLabel, alerts)` pairs, e.g.:
   ///   `[('Today, May 14', [...]), ('Yesterday, May 13', [...])]`
   List<({String label, List<AlertModel> alerts})> get groupedAlerts {
-    final visible = visibleAlerts;
+    final visible = visibleAlerts
+      ..sort((a, b) => b.timestamp.compareTo(a.timestamp)); // newest first
     if (visible.isEmpty) return [];
 
     final now   = DateTime.now();
@@ -146,7 +147,6 @@ class AlertProvider extends ChangeNotifier {
         .map((e) => (label: e.key, alerts: e.value))
         .toList();
   }
-
   String _monthName(int month) => const [
     '', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
     'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',

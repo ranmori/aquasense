@@ -221,22 +221,26 @@ class _BackButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 40, height: 40,
-        decoration: const BoxDecoration(
-          color: AppColors.mintLight,
-          shape: BoxShape.circle,
-        ),
-        child: const Icon(
-          Icons.arrow_back,
-          color:  AppColors.teal,
-          size:   20,
+    return Semantics(
+      button: true,
+      label: 'Go back',
+      child: InkWell(
+        onTap: onTap,
+        customBorder: const CircleBorder(),
+        child: Container(
+          width: 40, height: 40,
+          decoration: const BoxDecoration(
+            color: AppColors.mintLight,
+            shape: BoxShape.circle,
+          ),
+          child: const Icon(
+            Icons.arrow_back,
+            color:  AppColors.teal,
+            size:   20,
+          ),
         ),
       ),
-    );
-  }
+    );  }
 }
 
 /// AquaSense teal circle with water-drop icon — mirrors the app logo style.
@@ -312,10 +316,17 @@ class _OtpBox extends StatefulWidget {
 }
 
 class _OtpBoxState extends State<_OtpBox> {
+  void _onFocusChange() => setState(() {});
   @override
   void initState() {
     super.initState();
-    widget.focusNode.addListener(() => setState(() {}));
+    widget.focusNode.addListener(_onFocusChange);
+  }
+  
+  @override
+  void dispose() {
+    widget.focusNode.removeListener(_onFocusChange);
+    super.dispose();
   }
 
   @override
@@ -389,17 +400,20 @@ class _ResendRow extends StatelessWidget {
         Text('Resend a new code', style: tt.bodyMedium),
         const SizedBox(width: 6),
         canResend
-            ? GestureDetector(
-                onTap: onResend,
-                child: Text(
-                  'Resend',
-                  style: tt.bodyMedium?.copyWith(
-                    color:      AppColors.teal,
-                    fontWeight: FontWeight.w700,
+            ? Semantics(
+                button: true,
+                label: 'Resend verification code',
+                child: GestureDetector(
+                  onTap: onResend,
+                  child: Text(
+                    'Resend',
+                    style: tt.bodyMedium?.copyWith(
+                      color:      AppColors.teal,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
-              )
-            : Text(
+              )            : Text(
                 '${secondsLeft}s',
                 style: tt.bodyMedium?.copyWith(
                   color:      AppColors.teal,

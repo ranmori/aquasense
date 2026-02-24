@@ -101,7 +101,7 @@ Screen / Widget
 
 | Layer | Technology |
 |-------|-----------|
-| **Framework** | Flutter 3.x (Dart SDK ^3.10.4) |
+| **Framework** | Flutter 3.x (Dart SDK ^3.0.4) |
 | **State Management** | [provider](https://pub.dev/packages/provider) ^6.1.1 |
 | **Fonts** | [google_fonts](https://pub.dev/packages/google_fonts) ^8.0.2 (DM Sans) |
 | **Persistence** | [shared_preferences](https://pub.dev/packages/shared_preferences) ^2.0.15 |

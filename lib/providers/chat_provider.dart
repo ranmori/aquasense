@@ -20,10 +20,11 @@ class ChatProvider extends ChangeNotifier {
   bool              get isTyping  => _isTyping;
 
   /// Seeds the initial assistant greeting when the chat opens.
-  void _seedOpeningMessage() {
+  void _seedOpeningMessage(String? userName) {
+    final greeting = userName != null ? 'Hey $userName!' : 'Hello!';
     _messages.add(ChatMessage(
       id:   'm0',
-      text: 'Hey Meggie! How may I help you today?',
+      text: '$greeting How may I help you today?',
       role: ChatRole.assistant,
     ));
   }

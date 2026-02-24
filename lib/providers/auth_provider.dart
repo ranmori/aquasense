@@ -108,7 +108,10 @@ class AuthProvider extends ChangeNotifier {
       }
     } catch (_) {
       // Corrupted prefs — clear and start fresh
-      await prefs.clear();
+      // Avoid clearing all SharedPreferences on corrupted auth data.
+      await prefs.remove(_PrefKeys.userJson);
+      await prefs.remove(_PrefKeys.verified);
+      await prefs.remove(_PrefKeys.rememberMe);
     }
     return false;
   }
@@ -188,8 +191,7 @@ class AuthProvider extends ChangeNotifier {
     if (storedJson != null && wasVerified) {
       try {
         final stored = UserModel.fromJsonString(storedJson);
-        if (stored.email == email.trim() && stored.isEmailVerified) {
-          // Session is still valid — skip OTP
+        if (stored.email.toLowerCase() == email.trim().toLowerCase() && stored.isEmailVerified) {          // Session is still valid — skip OTP
           _user   = stored.copyWith(rememberMe: rememberMe);
           _status = AuthStatus.authenticated;
 
@@ -214,10 +216,7 @@ class AuthProvider extends ChangeNotifier {
       UserModel(email: email.trim(), isEmailVerified: false).toJsonString(),
     );
     await prefs.setBool(_PrefKeys.verified, false);
-    if (rememberMe) {
-      await prefs.setBool(_PrefKeys.rememberMe, true);
-    }
-
+    await prefs.setBool(_PrefKeys.rememberMe, rememberMe);
     _user   = UserModel(email: email.trim(), isEmailVerified: false);
     _status = AuthStatus.pendingVerification;
     notifyListeners();

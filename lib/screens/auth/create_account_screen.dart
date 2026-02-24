@@ -42,7 +42,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
 
   // ── Validation helpers ────────────────────────────────────────────────────
 
-  static final _emailRegex = RegExp(r'^[\w.+-]+@[\w-]+\.[a-zA-Z]{2,}$');
+  static final _emailRegex = RegExp(r'^[\w.+-]+@[\w-]+(?:\.[\w-]+)*\.[a-zA-Z]{2,}$');
 
   String? get _emailError {
     if (!_emailTouched) return null;
@@ -168,7 +168,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                     onChanged: (_) => setState(() {
                       _passwordTouched = true;
                       // Re-validate confirm field live when password changes
-                      if (_confirmPasswordTouched) {}
+                      // if (_confirmPasswordTouched) {}
                     }),
                   ),
                   _FieldError(message: _passwordError),
@@ -255,26 +255,29 @@ class _FieldError extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (message == null) return const SizedBox(height: 4);
-    return Padding(
-      padding: const EdgeInsets.only(top: 6),
+    return SizedBox(
+      height: 24, // Reserve consistent height
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const Icon(Icons.error_outline, size: 14, color: AppColors.riskHighFg),
-          const SizedBox(width: 4),
-          Expanded(
-            child: Text(
-              message!,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: AppColors.riskHighFg,
+          if (message != null) ...[
+            const Icon(Icons.error_outline, size: 14, color: AppColors.riskHighFg),
+            const SizedBox(width: 4),
+            Expanded(
+              child: Text(
+                message!,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: AppColors.riskHighFg,
+                ),
               ),
             ),
-          ),
+          ],
         ],
       ),
     );
-  }
-}
+  } 
+   }
+
 
 /// "I agree to the terms of service and privacy policy" checkbox row.
 /// Only used on Create Account so kept private to this file.

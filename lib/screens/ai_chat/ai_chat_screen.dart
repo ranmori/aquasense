@@ -26,14 +26,20 @@ class AiChatScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final sensor = ModalRoute.of(context)!.settings.arguments as SensorModel;
+    final args = ModalRoute.of(context)?.settings.arguments;
+    if (args is! SensorModel) {
+      // Gracefully handle missing/invalid arguments
+      return const Scaffold(
+        body: Center(child: Text('Invalid sensor data')),
+      );
+    }
+    final sensor = args;
 
     return ChangeNotifierProvider(
       create: (_) => ChatProvider(sensor: sensor),
       child: _AiChatView(sensor: sensor),
     );
-  }
-}
+  }}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Main view — reads ChatProvider

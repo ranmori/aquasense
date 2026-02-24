@@ -36,7 +36,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
   // ── Validation helpers ────────────────────────────────────────────────────
 
-  static final _emailRegex = RegExp(r'^[\w.+-]+@[\w-]+\.[a-zA-Z]{2,}$');
+  static final _emailRegex = RegExp(r'^[\w.+-]+@[\w-]+(?:\.[\w-]+)*\.[a-zA-Z]{2,}$');
 
   String? get _emailError {
     if (!_emailTouched) return null;
@@ -137,7 +137,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     hint:         'Enter your email',
                     controller:   _emailController,
                     keyboardType: TextInputType.emailAddress,
-                    onChanged:    (_) => setState(() => _emailTouched = true),
+                    onChanged:    (_) { if (!_emailTouched) setState(() => _emailTouched = true); },
                   ),
                   _FieldError(message: _emailError),
                   const SizedBox(height: 18),
@@ -235,7 +235,7 @@ class _FieldError extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (message == null) return const SizedBox(height: 4);
+    if (message == null) return const SizedBox(height: 20);
     return Padding(
       padding: const EdgeInsets.only(top: 6),
       child: Row(
@@ -255,7 +255,6 @@ class _FieldError extends StatelessWidget {
     );
   }
 }
-
 /// "Remember me" checkbox row — local to SignInScreen.
 class _RememberMeCheckbox extends StatelessWidget {
   final bool value;
