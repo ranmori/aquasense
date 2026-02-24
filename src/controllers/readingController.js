@@ -2,7 +2,7 @@ const Reading = require('../models/model reading');
 const Sensor = require('../models/model sensor');
 const Alert = require('../models/model alerts');
 
-exports.submitReading = async (req, res) => {
+exports.uploadReading = async (req, res) => {
     try {
         const { api_key, ph, turbidity, temperature, tds, dissolved_oxygen } = req.body;
 
@@ -19,7 +19,7 @@ exports.submitReading = async (req, res) => {
         if (turbidity <= 5) turbMsg = "LOW / OPTIMUM, The water is safe and good for use"; // [cite: 16]
         else if (turbidity <= 50) turbMsg = "MEDIUM, The water is slightly turbid. Apply coagulation, sedimentation and filtration"; // [cite: 18]
         else turbMsg = "HIGH, The water is dangerous. Do not use without treatment"; // [cite: 20]
-
+        
         let doMsg = "";
         if (dissolved_oxygen < 5) doMsg = "LOW, Poor water quality. Improve aeration"; // [cite: 23]
         else if (dissolved_oxygen <= 6.5) doMsg = "MEDIUM, Acceptable but monitor freshness"; // [cite: 25]

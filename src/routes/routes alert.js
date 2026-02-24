@@ -1,9 +1,13 @@
+console.log('🔥 routes alert.js LOADED');
 const express = require('express');
 const router = express.Router();
 const alertController = require('../controllers/alertController');
-const { protect } = require('../middleware/authMiddleware'); // 1. Import the security guard
+const { protect } = require('../middleware/authMiddleware');
 
-// This matches the /user/:userId part of your Postman URL
+// Get alerts for a user
 router.get('/user/:userId', protect, alertController.getUserAlerts);
 
-module.exports = router; // <--- This must be at the bottom!
+// ✅ Resolve an alert
+router.patch('/resolve/:id', protect, alertController.resolveAlert);
+
+module.exports = router;

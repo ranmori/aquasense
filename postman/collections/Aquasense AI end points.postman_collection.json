@@ -1,0 +1,374 @@
+{
+  "info": {
+    "_postman_id": "79a2f4b6-fc13-4589-aadb-03b8a3f9963d",
+    "name": "Aquasense AI end points",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "New Request",
+      "id": "4dd595c1-60bc-4320-9d1b-59f8bd816fce",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "http://localhost:5000/api/users/register",
+      "id": "a9ecee72-cd50-4b81-9afb-6b1950de7913",
+      "protocolProfileBehavior": {
+        "disabledSystemHeaders": {
+          "host": true,
+          "user-agent": true,
+          "accept": true,
+          "accept-encoding": true,
+          "connection": true,
+          "content-length": true
+        }
+      },
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"username\": \"FidesNjeri86\",\r\n    \"full_name\": \"Fides Njeri\",\r\n    \"email\": \"njerinjuguna943@gmail.com\",\r\n    \"password\": \"Fides8660\",\r\n    \"organization_type\": \"School\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/users/register",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "users",
+            "register"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "http://localhost:5000/api/sensors/register",
+      "id": "4aeeb6ad-a79b-477b-a6ce-4ad411164310",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"sensor_name\": \"Main Tank Alpha\",\r\n  \"sensor_type\": \"Ultrasonic Level Sensor\",\r\n  \"location\": \"Nairobi North Station\",\r\n  \"UserId\": 1\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/sensors/register",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "sensors",
+            "register"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "http://localhost:5000/api/sensors/user/1",
+      "id": "a6e92a09-619c-45b6-ba77-511e113ba7a2",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJuamVyaW5qdWd1bmE5NDNAZ21haWwuY29tIiwiaWF0IjoxNzcxODY1ODgwLCJleHAiOjE3NzE5NTIyODB9.Au6UqbaMHdZTXpRb0yPtPejgkJpwLq4vUc48eHIkRiY",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5000/api/sensors/user/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "sensors",
+            "user",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "http://localhost:5000/api/sensors/analytics/1",
+      "id": "c56c6c5f-191d-47eb-906a-15a300b786a8",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJuamVyaW5qdWd1bmE5NDNAZ21haWwuY29tIiwiaWF0IjoxNzcxODY1ODgwLCJleHAiOjE3NzE5NTIyODB9.Au6UqbaMHdZTXpRb0yPtPejgkJpwLq4vUc48eHIkRiY",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5000/api/sensors/analytics/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "sensors",
+            "analytics",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "http://localhost:5000/api/readings/upload",
+      "id": "4255a04b-83e6-4a14-ac55-54465c745cda",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJuamVyaW5qdWd1bmE5NDNAZ21haWwuY29tIiwiaWF0IjoxNzcxODY1ODgwLCJleHAiOjE3NzE5NTIyODB9.Au6UqbaMHdZTXpRb0yPtPejgkJpwLq4vUc48eHIkRiY",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"api_key\": \"AQ-2a0632f505ff903d9f5c9abebfb5ab6d\",\r\n  \"ph\": 3.0,\r\n  \"temperature\": 24.8,\r\n  \"turbidity\": 4.0,\r\n  \"tds\": 300,\r\n  \"dissolved_oxygen\": 7.2\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/readings/upload",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "readings",
+            "upload"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "http://localhost:5000/api/readings/history/1",
+      "id": "829060e1-3c47-4404-b5f8-bdae08245807",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJuamVyaW5qdWd1bmE5NDNAZ21haWwuY29tIiwiaWF0IjoxNzcxODY1ODgwLCJleHAiOjE3NzE5NTIyODB9.Au6UqbaMHdZTXpRb0yPtPejgkJpwLq4vUc48eHIkRiY",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5000/api/readings/history/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "readings",
+            "history",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "http://localhost:5000/api/alerts/user/1",
+      "id": "696f6dd8-ef15-40e6-8ca6-152e2b2f92cd",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJuamVyaW5qdWd1bmE5NDNAZ21haWwuY29tIiwiaWF0IjoxNzcxODY1ODgwLCJleHAiOjE3NzE5NTIyODB9.Au6UqbaMHdZTXpRb0yPtPejgkJpwLq4vUc48eHIkRiY",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5000/api/alerts/user/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "alerts",
+            "user",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "http://localhost:5000/api/alerts/resolve/1",
+      "id": "840f0085-a1e6-4474-a6a1-e7698064e3b6",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJuamVyaW5qdWd1bmE5NDNAZ21haWwuY29tIiwiaWF0IjoxNzcxODY1ODgwLCJleHAiOjE3NzE5NTIyODB9.Au6UqbaMHdZTXpRb0yPtPejgkJpwLq4vUc48eHIkRiY",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PATCH",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/alerts/resolve/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "alerts",
+            "resolve",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "http://localhost:5000/api/users/login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "id": "7e2891b7-a16e-4217-bcaa-87185b1a7aeb",
+            "exec": [
+              "const jsonData = pm.response.json();\r",
+              "if (jsonData.token) {\r",
+              "    pm.environment.set(\"jwt_token\", jsonData.token);\r",
+              "    console.log(\"Token has been saved to environment!\");\r",
+              "}"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "id": "c22d4e2d-a98d-464c-949c-fe64d8d26750",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJuamVyaW5qdWd1bmE5NDNAZ21haWwuY29tIiwiaWF0IjoxNzcxODY1ODgwLCJleHAiOjE3NzE5NTIyODB9.Au6UqbaMHdZTXpRb0yPtPejgkJpwLq4vUc48eHIkRiY",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"email\": \"njerinjuguna943@gmail.com\",\r\n  \"password\": \"Fides8660\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/users/login",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5000",
+          "path": [
+            "api",
+            "users",
+            "login"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
